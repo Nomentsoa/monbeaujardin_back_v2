@@ -2,9 +2,11 @@ package ca.lazanomentsoa.monbeaujardinbackv2.security.web;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.security.dao.RoleRepository;
 import ca.lazanomentsoa.monbeaujardinbackv2.security.dao.UtilisateurRepository;
+import ca.lazanomentsoa.monbeaujardinbackv2.security.dto.LoginDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.security.dto.RegisterDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.security.entities.Role;
 import ca.lazanomentsoa.monbeaujardinbackv2.security.entities.Utilisateur;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,10 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -29,7 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/authentification")
+@Slf4j
+
 public class AuthController {
 
     private JwtEncoder jwtEncoder;
@@ -57,6 +59,7 @@ public class AuthController {
             return new ResponseEntity<>("Utilisateur déjà existant", HttpStatus.BAD_REQUEST);
         }
 
+        log.info("je suis bien dans creation d'utilisateur " + registerDto.getPassword());
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setUsername(registerDto.getUsername());
         utilisateur.setPassword(passwordEncoder.encode(registerDto.getPassword()));
@@ -68,29 +71,28 @@ public class AuthController {
         return new ResponseEntity<>("Utilisateur enregistré", HttpStatus.CREATED);
     }
 
-
     @PostMapping("token")
-    public ResponseEntity<Map<String, String>> jwtToken(String grantType, String username, String password, boolean withRefreshToken, String refreshToken){
+    public ResponseEntity<Map<String, String>> jwtToken(@RequestBody LoginDto loginDto){
         String subject = null;
         String scope = null;
 
-        if(grantType.equals("password")){
+        if(loginDto.getGrantType().equals("password")){
             Authentication authentication = authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(username, password)
+              new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
             );
 
             subject = authentication.getName();
             scope = authentication.getAuthorities().stream().map(
                     auth -> auth.getAuthority()
             ).collect(Collectors.joining(" "));
-        }else if(grantType.equals("refreshToken")){
-            if(refreshToken == null){
+        }else if(loginDto.getGrantType().equals("refreshToken")){
+            if(loginDto.getRefreshToken() == null){
                 return new ResponseEntity<>(Map.of("errorMessage", "Refresh Token est requis"), HttpStatus.UNAUTHORIZED);
             }
 
             Jwt decodeJWT = null;
             try {
-                decodeJWT = jwtDecoder.decode(refreshToken);
+                decodeJWT = jwtDecoder.decode(loginDto.getRefreshToken());
             }catch (JwtException e){
                 return new ResponseEntity<>(Map.of("errorMessage", e.getMessage()), HttpStatus.UNAUTHORIZED);
             }
@@ -109,15 +111,15 @@ public class AuthController {
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .subject(subject)
                 .issuedAt(instant)
-                .expiresAt(instant.plus(withRefreshToken?5:30, ChronoUnit.MINUTES))
+                .expiresAt(instant.plus(loginDto.getWithRefreshToken()?5:30, ChronoUnit.MINUTES))
                 .issuer("security-service")
                 .claim("scope", scope)
                 .build();
 
         String jwtAccessToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
-        idToken.put("access_token", jwtAccessToken);
+        idToken.put("accessToken", jwtAccessToken);
 
-        if(withRefreshToken){
+        if(loginDto.getWithRefreshToken()){
             JwtClaimsSet jwtClaimsSetRefresh = JwtClaimsSet.builder()
                     .subject(subject)
                     .issuedAt(instant)
@@ -126,7 +128,7 @@ public class AuthController {
                     .build();
 
             String jwtRefreshToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSetRefresh)).getTokenValue();
-            idToken.put("refresh_token", jwtRefreshToken);
+            idToken.put("refreshToken", jwtRefreshToken);
         }
 
         return new ResponseEntity<>(idToken, HttpStatus.CREATED);
