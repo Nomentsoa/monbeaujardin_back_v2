@@ -10,7 +10,7 @@ public class EtudiantDetailDto {
     private String prenom;
     private String dateNaissance;
     private String adresse;
-    private String sexe;
+    private Character sexe;
     private String noteSupplementaire;
     private String nomMere;
     private String telephoneMere;

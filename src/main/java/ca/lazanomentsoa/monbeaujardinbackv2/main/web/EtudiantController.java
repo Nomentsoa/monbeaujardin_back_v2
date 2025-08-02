@@ -2,6 +2,7 @@ package ca.lazanomentsoa.monbeaujardinbackv2.main.web;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantDetailDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.PageEtudiantListDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.ReponseDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.services.EtudiantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,9 @@ public class EtudiantController {
     }
 
     @PostMapping("")
-    public ResponseEntity<EtudiantDetailDto> addEtudiant(@RequestBody EtudiantDetailDto etudiantDetailDto){
+    public ResponseEntity<ReponseDto> addEtudiant(@RequestBody EtudiantDetailDto etudiantDetailDto){
         log.info(EtudiantController.class.getSimpleName(), "addEtudiant");
-        return new ResponseEntity<>(etudiantService.saveEtudiantDetailDto(etudiantDetailDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(etudiantService.saveEtudiantDetailDto(etudiantDetailDto), HttpStatus.OK);
     }
 
 }

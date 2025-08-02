@@ -18,4 +18,8 @@ public class DernierMatricul {
     private Integer id;
 
     private String matricul;
+
+    private String appartenant;
+
+    public DernierMatricul(String matricul) {}
 }

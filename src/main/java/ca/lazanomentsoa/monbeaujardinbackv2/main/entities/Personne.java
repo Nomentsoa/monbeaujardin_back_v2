@@ -25,4 +25,5 @@ public abstract class Personne {
     private String adresse;
     private Character sexe;
     private String noteSupplementaire;
+    private String image;
 }
