@@ -23,4 +23,5 @@ public class Etudiant extends Personne{
     @Column(length = 10)
     private String telephoneTuteur;
     private String professionTuteur;
+    private Integer nombreFraternite;
 }

@@ -21,4 +21,5 @@ public class EtudiantDetailDto {
     private String nomTuteur;
     private String telephoneTuteur;
     private String professionTuteur;
+    private Integer nombreFraternite;
 }

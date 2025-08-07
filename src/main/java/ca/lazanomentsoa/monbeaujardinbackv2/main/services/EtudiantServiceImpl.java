@@ -12,6 +12,7 @@ import ca.lazanomentsoa.monbeaujardinbackv2.main.repository.DernierMatriculRepos
 import ca.lazanomentsoa.monbeaujardinbackv2.main.repository.EtudiantRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -36,8 +37,8 @@ public class EtudiantServiceImpl implements EtudiantService{
         List<EtudiantItemListDto> etudiantItemListDtoList = pagedEtudiant.getContent().stream().map(etudiantMapper::toEtudiantItemListDto).collect(Collectors.toList());
         pageEtudiantListDto.setEtudiants(etudiantItemListDtoList);
         pageEtudiantListDto.setCurrentPage(page);
-        pageEtudiantListDto.setTotalPages(size);
         pageEtudiantListDto.setTotalPages(pagedEtudiant.getTotalPages());
+
 
         return pageEtudiantListDto;
     }

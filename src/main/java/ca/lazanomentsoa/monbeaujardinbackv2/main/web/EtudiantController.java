@@ -21,7 +21,7 @@ public class EtudiantController {
     @GetMapping("")
     public ResponseEntity<PageEtudiantListDto> getAllEtudiants(@RequestParam(name = "keyword", defaultValue = "") String keyWord,
                                                                 @RequestParam(name ="page", defaultValue = "0") int page,
-                                                               @RequestParam(name = "size", defaultValue = "1") int size){
+                                                               @RequestParam(name = "size", defaultValue = "10") int size){
         log.info(EtudiantController.class.getSimpleName(), "getAllEtudiants");
         return new ResponseEntity<>(etudiantService.getPageEtudiantListDto(keyWord, page, size), HttpStatus.OK);
 
