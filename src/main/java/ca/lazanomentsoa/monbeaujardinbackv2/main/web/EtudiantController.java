@@ -19,11 +19,11 @@ public class EtudiantController {
     private EtudiantService etudiantService;
 
     @GetMapping("")
-    public ResponseEntity<PageEtudiantListDto> getAllEtudiants(@RequestParam(name = "keyword", defaultValue = "") String keyWord,
+    public ResponseEntity<PageEtudiantListDto> getAllEtudiants(@RequestParam(name = "keyword", defaultValue = "") String keyWord, @RequestParam(name = "etat", defaultValue = "I") String etat,
                                                                 @RequestParam(name ="page", defaultValue = "0") int page,
                                                                @RequestParam(name = "size", defaultValue = "10") int size){
         log.info(EtudiantController.class.getSimpleName(), "getAllEtudiants");
-        return new ResponseEntity<>(etudiantService.getPageEtudiantListDto(keyWord, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(etudiantService.getPageEtudiantListDto(keyWord, etat, page, size), HttpStatus.OK);
 
     }
 
@@ -31,6 +31,12 @@ public class EtudiantController {
     public ResponseEntity<ReponseDto> addEtudiant(@RequestBody EtudiantDetailDto etudiantDetailDto){
         log.info(EtudiantController.class.getSimpleName(), "addEtudiant");
         return new ResponseEntity<>(etudiantService.saveEtudiantDetailDto(etudiantDetailDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EtudiantDetailDto> getEtudiantDetailDto(@PathVariable("id") int id){
+        log.info(EtudiantController.class.getSimpleName(), "getEtudiantDetail " + id);
+        return new ResponseEntity<>(etudiantService.getEtudiantDetailBy(id), HttpStatus.OK);
     }
 
 }

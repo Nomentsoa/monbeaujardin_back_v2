@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class EtudiantDetailDto {
     private Integer id;
+    private String anneeInscription;
     private String matricule;
     private String nom;
     private String prenom;
@@ -22,4 +23,6 @@ public class EtudiantDetailDto {
     private String telephoneTuteur;
     private String professionTuteur;
     private Integer nombreFraternite;
+    private String image;
+    private String etat;
 }

@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface EtudiantRepository extends JpaRepository<Etudiant, Integer> {
-    @Query("select etudiant from Etudiant etudiant where etudiant.nom like %:keyword% or etudiant.prenom like %:keyword% or etudiant.matricule like %:keyword% order by etudiant.matricule")
-    Page<Etudiant> getAllEtudiantByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    @Query("select etudiant from Etudiant etudiant where etudiant.etat= :etat and (etudiant.nom like %:keyword% or etudiant.prenom like %:keyword% or etudiant.matricule like %:keyword%) order by etudiant.matricule")
+    Page<Etudiant> getAllEtudiantByKeyword(@Param("keyword") String keyword, @Param("etat") String etat,  Pageable pageable);
 }

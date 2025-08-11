@@ -26,4 +26,6 @@ public abstract class Personne {
     private Character sexe;
     private String noteSupplementaire;
     private String image;
+    @Column(length = 4)
+    private String anneeInscription;
 }

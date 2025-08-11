@@ -1,9 +1,11 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.services;
 
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantDetailDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.entities.DernierMatricul;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.enums.MatriculAppartenant;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.repository.DernierMatriculRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,4 +35,5 @@ public class DernierMatriculImpl implements DernierMatriculService {
             dernierMatriculRepository.save(matriculSaved);
         }
     }
+
 }

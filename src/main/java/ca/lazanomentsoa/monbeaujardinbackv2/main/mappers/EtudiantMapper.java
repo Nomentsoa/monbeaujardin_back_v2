@@ -11,6 +11,8 @@ public class EtudiantMapper {
     public EtudiantItemListDto toEtudiantItemListDto(Etudiant etudiant){
         EtudiantItemListDto etudiantItemListDto = new EtudiantItemListDto();
         BeanUtils.copyProperties(etudiant, etudiantItemListDto);
+        // set matricul etudiant Ex: 25/12-G
+        etudiantItemListDto.setMatricule(Integer.valueOf(etudiant.getAnneeInscription().substring(1,4))+"/"+etudiant.getMatricule()+"-"+etudiant.getSexe());
         return etudiantItemListDto;
 
     }
@@ -19,5 +21,12 @@ public class EtudiantMapper {
         Etudiant etudiant = new Etudiant();
         BeanUtils.copyProperties(etudiantDetailDto, etudiant);
         return etudiant;
+    }
+
+    public EtudiantDetailDto toEtudiantDetailDto(Etudiant etudiant){
+        EtudiantDetailDto etudiantDetailDto = new EtudiantDetailDto();
+        BeanUtils.copyProperties(etudiant, etudiantDetailDto);
+        etudiantDetailDto.setMatricule(Integer.valueOf(etudiant.getAnneeInscription().substring(1,4))+"/"+etudiant.getMatricule()+"-"+etudiant.getSexe());
+        return etudiantDetailDto;
     }
 }
