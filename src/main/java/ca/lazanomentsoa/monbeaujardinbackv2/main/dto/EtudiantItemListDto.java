@@ -9,4 +9,5 @@ public class EtudiantItemListDto {
     private String nom;
     private String prenom;
     private String dateNaissance;
+    private String etat;
 }

@@ -1,9 +1,6 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.services;
 
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantDetailDto;
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantItemListDto;
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.PageEtudiantListDto;
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.ReponseDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.*;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.entities.Etudiant;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.enums.MatriculAppartenant;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.mappers.EtudiantMapper;
@@ -40,26 +37,43 @@ public class EtudiantServiceImpl implements EtudiantService{
 
     @Override
     public ReponseDto saveEtudiantDetailDto(EtudiantDetailDto etudiantDetailDto) {
-        ReponseDto reponseDto = new ReponseDto();
         try {
             Etudiant savedEtudiant = etudiantRepository.save(etudiantMapper.fromEtudiantDetailDtoToEtudiant(etudiantDetailDto));
             dernierMatriculService.setDernierMatricul(savedEtudiant.getMatricule(), MatriculAppartenant.ETUDIANT.toString());
-            reponseDto.setIsError(false);
-            reponseDto.setMessage(null);
-
+            return new ReponseDto(false, "Saved successfully");
         } catch (DataIntegrityViolationException e) {
-            reponseDto.setIsError(true);
-            reponseDto.setMessage("Numero Matricul déjà utilisé");
+            return new ReponseDto(true, "Numero Matricul déjà utilisé");
         }catch (Exception e){
-            reponseDto.setIsError(true);
-            reponseDto.setMessage(e.getMessage());
+            return new ReponseDto(true, e.getMessage());
         }
-        return reponseDto;
     }
 
     @Override
     public EtudiantDetailDto getEtudiantDetailBy(int id) {
         Etudiant etudiant = etudiantRepository.findById(id).orElse(null);
         return etudiantMapper.toEtudiantDetailDto(etudiant);
+    }
+
+    @Override
+    public ReponseDto updateEtudiant(EtudiantUpdateDto etudiantUpdateDto) {
+        Etudiant etudiantToUpdate = etudiantRepository.findById(etudiantUpdateDto.getId()).orElse(null);
+        if(etudiantToUpdate != null){
+            etudiantToUpdate.setEtat(etudiantUpdateDto.getEtat());
+            etudiantToUpdate.setNombreFraternite(etudiantUpdateDto.getNombreFraternite());
+            etudiantToUpdate.setTelephoneMere(etudiantUpdateDto.getTelephoneMere());
+            etudiantToUpdate.setProfessionMere(etudiantUpdateDto.getProfessionMere());
+            etudiantToUpdate.setTelephonePere(etudiantUpdateDto.getTelephonePere());
+            etudiantToUpdate.setProfessionPere(etudiantUpdateDto.getProfessionPere());
+            etudiantToUpdate.setTelephoneTuteur(etudiantUpdateDto.getTelephoneTuteur());
+            etudiantToUpdate.setProfessionTuteur(etudiantUpdateDto.getProfessionTuteur());
+            etudiantToUpdate.setAdresse(etudiantUpdateDto.getAdresse());
+            etudiantToUpdate.setNoteSupplementaire(etudiantUpdateDto.getNoteSupplementaire());
+
+            etudiantRepository.save(etudiantToUpdate);
+            return new ReponseDto(false, "Updated");
+
+        }else{
+            return new ReponseDto(true, "Etudiant null");
+        }
     }
 }

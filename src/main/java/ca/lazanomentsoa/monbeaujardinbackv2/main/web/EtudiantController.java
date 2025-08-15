@@ -1,6 +1,7 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.web;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantDetailDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantUpdateDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.PageEtudiantListDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.ReponseDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.services.EtudiantService;
@@ -37,6 +38,12 @@ public class EtudiantController {
     public ResponseEntity<EtudiantDetailDto> getEtudiantDetailDto(@PathVariable("id") int id){
         log.info(EtudiantController.class.getSimpleName(), "getEtudiantDetail " + id);
         return new ResponseEntity<>(etudiantService.getEtudiantDetailBy(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("")
+    public ResponseEntity<ReponseDto> updateEtudiant(@RequestBody EtudiantUpdateDto etudiantUpdateDto){
+        log.info(EtudiantController.class.getSimpleName(), "updateEtudiant");
+        return new ResponseEntity<>(etudiantService.updateEtudiant(etudiantUpdateDto), HttpStatus.OK);
     }
 
 }
