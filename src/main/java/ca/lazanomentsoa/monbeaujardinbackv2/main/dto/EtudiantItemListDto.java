@@ -10,4 +10,6 @@ public class EtudiantItemListDto {
     private String prenom;
     private String dateNaissance;
     private String etat;
+    private String image;
+    private Character sexe;
 }

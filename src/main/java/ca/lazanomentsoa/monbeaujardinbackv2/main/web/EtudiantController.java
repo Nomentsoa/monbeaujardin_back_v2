@@ -1,9 +1,6 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.web;
 
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantDetailDto;
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EtudiantUpdateDto;
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.PageEtudiantListDto;
-import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.ReponseDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.*;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.services.EtudiantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
