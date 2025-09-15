@@ -1,9 +1,11 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.services;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.*;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.entities.Ecolage;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.entities.Etudiant;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.enums.MatriculAppartenant;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.mappers.EtudiantMapper;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.repository.EcolageRepository;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.repository.EtudiantRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,7 @@ public class EtudiantServiceImpl implements EtudiantService{
     private EtudiantRepository etudiantRepository;
     private EtudiantMapper etudiantMapper;
     private DernierMatriculService dernierMatriculService;
+    private EcolageRepository ecolageRepository;
     @Override
     public PageEtudiantListDto getPageEtudiantListDto(String keyword,String etat,  int page, int size) {
         PageEtudiantListDto pageEtudiantListDto = new PageEtudiantListDto();
@@ -75,6 +79,34 @@ public class EtudiantServiceImpl implements EtudiantService{
         }else{
             return new ReponseDto(true, "Etudiant null");
         }
+    }
+
+    @Override
+    public PagedEtudiantEcolageDto getPagedEtudiantEcolageDto(String keyword, String etat, int page, int size, byte mois, short annee) {
+        PagedEtudiantEcolageDto pagedEtudiantEcolageDtoListDto = new PagedEtudiantEcolageDto();
+        PageEtudiantListDto pageEtudiantListDto = getPageEtudiantListDto(keyword, etat, page, size);
+        pagedEtudiantEcolageDtoListDto.setCurrentPage(page);
+        pagedEtudiantEcolageDtoListDto.setTotalPages(pageEtudiantListDto.getTotalPages());
+        pagedEtudiantEcolageDtoListDto.setPageSize(pageEtudiantListDto.getPageSize());
+        List<EtudiantEcolageDto> etudiantEcolageDtos = new ArrayList<>();
+        pageEtudiantListDto.getEtudiants().forEach(etudiantItemListDto -> {
+            EtudiantEcolageDto etudiantEcolageDto = new EtudiantEcolageDto();
+            etudiantEcolageDto.setEtudiantItemDto(etudiantItemListDto);
+            Ecolage ecolageEtat =  ecolageRepository.getEcolageByIdEtudiantAndMoisAndAnnee(etudiantItemListDto.getId(), mois, annee);
+            if(ecolageEtat != null){
+                etudiantEcolageDto.setId(ecolageEtat.getId());
+                etudiantEcolageDto.setMois(ecolageEtat.getMois());
+                etudiantEcolageDto.setAnnee(ecolageEtat.getAnnee());
+                etudiantEcolageDto.setJour(ecolageEtat.getJour());
+                etudiantEcolageDto.setPayed(ecolageEtat.isPayed());
+            }
+            etudiantEcolageDtos.add(etudiantEcolageDto);
+        });
+
+        pagedEtudiantEcolageDtoListDto.setEtudiantEcolages(etudiantEcolageDtos);
+
+
+        return pagedEtudiantEcolageDtoListDto;
     }
 
 }

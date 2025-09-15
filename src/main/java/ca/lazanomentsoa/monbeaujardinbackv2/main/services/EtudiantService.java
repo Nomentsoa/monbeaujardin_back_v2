@@ -8,5 +8,5 @@ public interface EtudiantService {
     ReponseDto saveEtudiantDetailDto(EtudiantDetailDto etudiantDetailDto);
     EtudiantDetailDto getEtudiantDetailBy(int id);
     ReponseDto updateEtudiant(EtudiantUpdateDto etudiantUpdateDto);
-
+    PagedEtudiantEcolageDto getPagedEtudiantEcolageDto(String keyword, String etat, int page, int size, byte mois, short annee);
 }

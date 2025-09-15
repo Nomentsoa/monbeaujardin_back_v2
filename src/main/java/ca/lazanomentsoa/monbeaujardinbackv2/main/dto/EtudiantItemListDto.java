@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class EtudiantItemListDto {
-    private Integer id;
-    private String matricule;
-    private String nom;
-    private String prenom;
-    private String dateNaissance;
-    private String etat;
-    private String image;
-    private Character sexe;
+    protected Integer id;
+    protected String matricule;
+    protected String nom;
+    protected String prenom;
+    protected String dateNaissance;
+    protected String etat;
+    protected String image;
+    protected Character sexe;
 }

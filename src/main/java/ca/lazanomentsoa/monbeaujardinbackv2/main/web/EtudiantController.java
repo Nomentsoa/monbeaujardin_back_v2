@@ -1,6 +1,7 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.web;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.*;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.services.EcolageService;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.services.EtudiantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class EtudiantController {
     private EtudiantService etudiantService;
+    private EcolageService ecolageService;
 
     @GetMapping("")
     public ResponseEntity<PageEtudiantListDto> getAllEtudiants(@RequestParam(name = "keyword", defaultValue = "") String keyWord, @RequestParam(name = "etat", defaultValue = "I") String etat,
@@ -41,6 +43,14 @@ public class EtudiantController {
     public ResponseEntity<ReponseDto> updateEtudiant(@RequestBody EtudiantUpdateDto etudiantUpdateDto){
         log.info(EtudiantController.class.getSimpleName(), "updateEtudiant");
         return new ResponseEntity<>(etudiantService.updateEtudiant(etudiantUpdateDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/ecolage")
+    public ResponseEntity<PagedEtudiantEcolageDto> getAllEtudiantWithEtatEcolage(@RequestParam(name = "keyword", defaultValue = "") String keyWord, @RequestParam(name = "etat", defaultValue = "I") String etat,
+                                                                                 @RequestParam(name ="page", defaultValue = "0") int page,
+                                                                                 @RequestParam(name = "size", defaultValue = "10") int size, @RequestParam(name = "mois") byte mois, @RequestParam(name = "annee") short annee){
+        log.info(EtudiantController.class.getSimpleName(), "getAllEtudiantWithEtatEcolage");
+        return new ResponseEntity<>(etudiantService.getPagedEtudiantEcolageDto(keyWord, etat, page, size, mois, annee), HttpStatus.OK);
     }
 
 }
