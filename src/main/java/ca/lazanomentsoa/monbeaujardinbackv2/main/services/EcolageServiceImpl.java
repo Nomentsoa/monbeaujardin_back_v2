@@ -2,6 +2,7 @@ package ca.lazanomentsoa.monbeaujardinbackv2.main.services;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EcolageDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.ReponseDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.requests.EcolagePayRequestDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.entities.Ecolage;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.entities.Etudiant;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.mappers.EcolageMapper;
@@ -30,15 +31,28 @@ public class EcolageServiceImpl implements EcolageService {
     }
 
     @Override
-    public ReponseDto addEcolageToEtudiant(int idEtudiant, byte jour, byte mois, short annee) {
-        Optional<Etudiant> etudiant = etudiantRepository.findById(idEtudiant);
-        Ecolage ecolage = new Ecolage();
+    public ReponseDto addEcolageToEtudiant(EcolagePayRequestDto ecolagePayRequestDto) {
+        Optional<Etudiant> etudiant = etudiantRepository.findById(ecolagePayRequestDto.getIdEtudiant());
+        Ecolage ecolage;
 
         if(etudiant.isPresent()){
-            ecolage.setEtudiant(etudiant.get());
-            ecolage.setJour(jour);
-            ecolage.setMois(mois);
-            ecolage.setAnnee(annee);
+
+            ecolage = ecolageRepository.getEcolageByIdEtudiantAndMoisAndAnnee(etudiant.get().getId(), ecolagePayRequestDto.getMois(), ecolagePayRequestDto.getAnnee());
+            // verifier si la date de payement est deja defini
+            if(ecolage != null){
+                ecolage.setJour(ecolagePayRequestDto.getJour());
+                ecolage.setPayed(ecolagePayRequestDto.isPayed());
+            }else{
+                ecolage = new Ecolage();
+                ecolage.setEtudiant(etudiant.get());
+                ecolage.setJour(ecolagePayRequestDto.getJour());
+                ecolage.setMois(ecolagePayRequestDto.getMois());
+                ecolage.setAnnee(ecolagePayRequestDto.getAnnee());
+                ecolage.setPayed(ecolagePayRequestDto.isPayed());
+            }
+
+            ecolageRepository.save(ecolage);
+
             return new ReponseDto(false, "Saved");
         }else
             return new ReponseDto(true, "Erreur");

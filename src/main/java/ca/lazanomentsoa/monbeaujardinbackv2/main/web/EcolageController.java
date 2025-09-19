@@ -1,16 +1,15 @@
 package ca.lazanomentsoa.monbeaujardinbackv2.main.web;
 
 import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.EcolageDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.ReponseDto;
+import ca.lazanomentsoa.monbeaujardinbackv2.main.dto.requests.EcolagePayRequestDto;
 import ca.lazanomentsoa.monbeaujardinbackv2.main.services.EcolageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
@@ -20,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EcolageController {
     private EcolageService ecolageService;
 
-    @GetMapping("")
-    public ResponseEntity<EcolageDto> getEcolageEtudiant(@RequestParam(name = "idEtudiant") int idEtudiant, @RequestParam(name = "mois") byte mois, @RequestParam("annee") short annee){
-        log.info(EcolageController.class.getSimpleName(), "getEcolageEtudiant");
-        return new ResponseEntity<>(ecolageService.getEcolageByIdEtudiantAndMoisAndAnnee(idEtudiant, mois, annee), HttpStatus.OK);
+    @PostMapping("")
+    public ResponseEntity<ReponseDto> payEcolage(@RequestBody EcolagePayRequestDto ecolagePayRequestDto){
+        log.info(EcolageController.class.getSimpleName(), "payement ecolage");
+        return new ResponseEntity<>(ecolageService.addEcolageToEtudiant(ecolagePayRequestDto), HttpStatus.OK);
     }
 }

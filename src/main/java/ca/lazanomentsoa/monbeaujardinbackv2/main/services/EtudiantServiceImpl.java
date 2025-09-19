@@ -94,7 +94,6 @@ public class EtudiantServiceImpl implements EtudiantService{
             etudiantEcolageDto.setEtudiantItemDto(etudiantItemListDto);
             Ecolage ecolageEtat =  ecolageRepository.getEcolageByIdEtudiantAndMoisAndAnnee(etudiantItemListDto.getId(), mois, annee);
             if(ecolageEtat != null){
-                etudiantEcolageDto.setId(ecolageEtat.getId());
                 etudiantEcolageDto.setMois(ecolageEtat.getMois());
                 etudiantEcolageDto.setAnnee(ecolageEtat.getAnnee());
                 etudiantEcolageDto.setJour(ecolageEtat.getJour());
